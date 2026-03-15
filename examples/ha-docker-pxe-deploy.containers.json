@@ -1,12 +1,7 @@
 [
   {
     "name": "rgpiod",
-    "image": "local/rgpiod:latest",
-    "source": {
-      "type": "git",
-      "url": "https://github.com/<owner>/<repo>.git",
-      "dockerfile": "Dockerfile"
-    },
+    "image": "ghcr.io/clam-docker-images/docker-rgpio:latest",
     "env": {
       "RGPIOD_PORT": "8889",
       "RGPIOD_LOCAL_ONLY": "0"

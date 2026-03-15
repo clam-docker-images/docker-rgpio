@@ -86,7 +86,7 @@ The Dockerfile adds the Raspberry Pi apt source on top of Debian and installs on
 
 ## Home Assistant PXE Docker Fleet
 
-This repository matches the `source.type: git` remote-build pattern described in the `ha-docker-pxe-deploy` README.
+This repository can be deployed either by pulling the published image or by building from Git. The example below now uses the published GHCR image.
 
 Use a `containers` entry like this on the Raspberry Pi client:
 
@@ -94,12 +94,7 @@ Use a `containers` entry like this on the Raspberry Pi client:
 [
   {
     "name": "rgpiod",
-    "image": "local/rgpiod:latest",
-    "source": {
-      "type": "git",
-      "url": "https://github.com/<owner>/<repo>.git",
-      "dockerfile": "Dockerfile"
-    },
+    "image": "ghcr.io/clam-docker-images/docker-rgpio:latest",
     "env": {
       "RGPIOD_PORT": "8889",
       "RGPIOD_LOCAL_ONLY": "0"
@@ -116,8 +111,8 @@ Use a `containers` entry like this on the Raspberry Pi client:
 
 Notes for that add-on model:
 
-- Use `source.type: git`, not an image pull, so the Pi client builds this repository locally.
-- Keep `image` as the local output tag for the client-side build.
+- The example above pulls the published image directly from GHCR.
+- If you prefer client-side builds on the Pi, you can still use `source.type: git` instead of a published image.
 - Add more entries under `devices` if the target board exposes additional gpiochips.
 - If you want to restrict access, set `RGPIOD_LOCAL_ONLY=1` or provide `RGPIOD_ALLOWED_IPS`.
 - The example JSON is also available in `examples/ha-docker-pxe-deploy.containers.json`.
