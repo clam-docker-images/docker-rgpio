@@ -58,6 +58,42 @@ BUILDER_NAME=${BUILDER_NAME:-docker-rgpio-arm64}
 EXTRA_ARGS=${EXTRA_ARGS:-}
 IMAGE_REF="${IMAGE_REPO}:${IMAGE_TAG}"
 
+case "${IMAGE_REPO}" in
+  *[ABCDEFGHIJKLMNOPQRSTUVWXYZ]*)
+    cat >&2 <<EOF
+IMAGE_REPO must be lowercase for Docker/OCI image references.
+
+Received:
+  ${IMAGE_REPO}
+
+For GHCR, use the lowercase owner or org name in the image path, for example:
+  ghcr.io/clam-/docker-rgpio
+EOF
+    exit 64
+    ;;
+esac
+
+if ! printf '%s\n' "${IMAGE_REPO}" | grep -Eq '^[a-z0-9]+([._-][a-z0-9]+)*(\/[a-z0-9]+([._-][a-z0-9]+)*)*$'; then
+  cat >&2 <<EOF
+IMAGE_REPO is not a valid Docker/OCI image reference path.
+
+Received:
+  ${IMAGE_REPO}
+
+Each slash-separated path component must use lowercase letters or digits, and may contain separators only between alphanumeric characters.
+Examples of valid components:
+  clam
+  clam-io
+  docker_rgpio
+
+Examples of invalid components:
+  clam-
+  -clam
+  clam--test
+EOF
+  exit 64
+fi
+
 ensure_builder() {
   if ! ${BUILDX_CMD} inspect "${BUILDER_NAME}" >/dev/null 2>&1; then
     ${BUILDX_CMD} create \
