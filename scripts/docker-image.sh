@@ -12,6 +12,8 @@ Environment:
   IMAGE_TAG      Image tag. Default: latest
   IMAGE_PLATFORM Target platform. Default: linux/arm64
   BASE_IMAGE     Base image build arg. Default: debian:trixie-slim
+  LG_REPO        GitHub repository providing lg sources. Default: Clam-/lg
+  LG_TAG         Git tag to build from. Default: 202603-off-fix
   BUILDER_NAME   buildx builder name. Default: docker-rgpio-arm64
   EXTRA_ARGS     Extra arguments appended to docker buildx build
 EOF
@@ -54,6 +56,8 @@ IMAGE_REPO=${IMAGE_REPO:-docker-rgpio}
 IMAGE_TAG=${IMAGE_TAG:-latest}
 IMAGE_PLATFORM=${IMAGE_PLATFORM:-linux/arm64}
 BASE_IMAGE=${BASE_IMAGE:-debian:trixie-slim}
+LG_REPO=${LG_REPO:-Clam-/lg}
+LG_TAG=${LG_TAG:-202603-off-fix}
 BUILDER_NAME=${BUILDER_NAME:-docker-rgpio-arm64}
 EXTRA_ARGS=${EXTRA_ARGS:-}
 IMAGE_REF="${IMAGE_REPO}:${IMAGE_TAG}"
@@ -115,6 +119,8 @@ run_build() {
     --builder "${BUILDER_NAME}" \
     --platform "${IMAGE_PLATFORM}" \
     --build-arg "BASE_IMAGE=${BASE_IMAGE}" \
+    --build-arg "LG_REPO=${LG_REPO}" \
+    --build-arg "LG_TAG=${LG_TAG}" \
     --tag "${IMAGE_REF}"
 
   if [ "${action}" = "build" ]; then
@@ -130,7 +136,7 @@ run_build() {
 
   set -- "$@" .
 
-  echo "Building ${IMAGE_REF} for ${IMAGE_PLATFORM}" >&2
+  echo "Building ${IMAGE_REF} for ${IMAGE_PLATFORM} from ${LG_REPO}@${LG_TAG}" >&2
   if [ "${action}" = "publish" ]; then
     echo "Publishing ${IMAGE_REF}" >&2
   fi

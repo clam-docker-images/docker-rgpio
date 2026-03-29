@@ -2,6 +2,8 @@ IMAGE_REPO ?= docker-rgpio
 IMAGE_TAG ?= latest
 IMAGE_PLATFORM ?= linux/arm64
 BASE_IMAGE ?= debian:trixie-slim
+LG_REPO ?= Clam-/lg
+LG_TAG ?= 202603-off-fix
 BUILDER_NAME ?= docker-rgpio-arm64
 EXTRA_ARGS ?=
 
@@ -12,6 +14,8 @@ image-build:
 	IMAGE_TAG='$(IMAGE_TAG)' \
 	IMAGE_PLATFORM='$(IMAGE_PLATFORM)' \
 	BASE_IMAGE='$(BASE_IMAGE)' \
+	LG_REPO='$(LG_REPO)' \
+	LG_TAG='$(LG_TAG)' \
 	BUILDER_NAME='$(BUILDER_NAME)' \
 	EXTRA_ARGS='$(EXTRA_ARGS)' \
 	sh scripts/docker-image.sh build
@@ -21,6 +25,8 @@ image-publish:
 	IMAGE_TAG='$(IMAGE_TAG)' \
 	IMAGE_PLATFORM='$(IMAGE_PLATFORM)' \
 	BASE_IMAGE='$(BASE_IMAGE)' \
+	LG_REPO='$(LG_REPO)' \
+	LG_TAG='$(LG_TAG)' \
 	BUILDER_NAME='$(BUILDER_NAME)' \
 	EXTRA_ARGS='$(EXTRA_ARGS)' \
 	sh scripts/docker-image.sh publish
@@ -29,4 +35,4 @@ image-help:
 	@printf '%s\n' \
 	  'make image-build IMAGE_REPO=<repo> IMAGE_TAG=<tag>' \
 	  'make image-publish IMAGE_REPO=<repo> IMAGE_TAG=<tag>' \
-	  'Optional: IMAGE_PLATFORM=linux/arm64 BASE_IMAGE=debian:trixie-slim'
+	  'Optional: IMAGE_PLATFORM=linux/arm64 BASE_IMAGE=debian:trixie-slim LG_REPO=Clam-/lg LG_TAG=202603-off-fix'

@@ -5,6 +5,8 @@ services:
       context: .
       args:
         BASE_IMAGE: ${BASE_IMAGE:-debian:trixie-slim}
+        LG_REPO: ${LG_REPO:-Clam-/lg}
+        LG_TAG: ${LG_TAG:-202603-off-fix}
     environment:
       RGPIOD_PORT: ${RGPIOD_PORT:-8889}
       RGPIOD_LOCAL_ONLY: ${RGPIOD_LOCAL_ONLY:-0}

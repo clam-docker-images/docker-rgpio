@@ -1,25 +1,35 @@
 # syntax=docker/dockerfile:1.7
 
 ARG BASE_IMAGE=debian:trixie-slim
+ARG LG_REPO=Clam-/lg
+ARG LG_TAG=202603-off-fix
 FROM ${BASE_IMAGE}
+
+ARG LG_REPO
+ARG LG_TAG
 
 SHELL ["/bin/sh", "-exc"]
 
-COPY raspberrypi-archive.asc /usr/share/keyrings/raspberrypi-archive.asc
-
 RUN printf '%s\n' \
-      'Types: deb' \
-      'URIs: http://archive.raspberrypi.com/debian/' \
-      'Suites: trixie' \
-      'Components: main' \
-      'Signed-By: /usr/share/keyrings/raspberrypi-archive.asc' \
-      > /etc/apt/sources.list.d/raspi.sources \
+      "https://github.com/${LG_REPO}/archive/refs/tags/${LG_TAG}.tar.gz" \
+      > /tmp/lg-source-url \
  && apt-get update \
  && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+      ca-certificates \
+      curl \
+      gcc \
+      libc6-dev \
+      make \
       procps \
-      rgpiod \
-      rgpio-tools \
+      tar \
+ && mkdir -p /tmp/lg-src \
+ && curl -fsSL "$(cat /tmp/lg-source-url)" -o /tmp/lg.tar.gz \
+ && tar -xzf /tmp/lg.tar.gz -C /tmp/lg-src --strip-components=1 \
+ && make -C /tmp/lg-src \
+ && make -C /tmp/lg-src install prefix=/usr/local \
+ && ldconfig \
  && rgpiod -v \
+ && rm -rf /tmp/lg-source-url /tmp/lg.tar.gz /tmp/lg-src \
  && rm -rf /var/lib/apt/lists/*
 
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
