@@ -34,5 +34,7 @@ image-publish:
 image-help:
 	@printf '%s\n' \
 	  'make image-build IMAGE_REPO=<repo> IMAGE_TAG=<tag>' \
+	  'make image-build LG_REPO=<owner/repo> LG_TAG=<tag>' \
 	  'make image-publish IMAGE_REPO=<repo> IMAGE_TAG=<tag>' \
+	  'make image-publish IMAGE_REPO=<repo> IMAGE_TAG=<tag> LG_REPO=<owner/repo> LG_TAG=<tag>' \
 	  'Optional: IMAGE_PLATFORM=linux/arm64 BASE_IMAGE=debian:trixie-slim LG_REPO=Clam-/lg LG_TAG=202603-off-fix'

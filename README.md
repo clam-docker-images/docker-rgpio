@@ -27,10 +27,22 @@ Build an arm64 image into your local Docker image store:
 make image-build
 ```
 
+Build against a different `lg` repo and tag:
+
+```sh
+make image-build LG_REPO=<owner>/lg LG_TAG=<tag>
+```
+
 Publish an arm64 image to a registry:
 
 ```sh
 make image-publish IMAGE_REPO=ghcr.io/<owner>/docker-rgpio IMAGE_TAG=latest
+```
+
+Publish an image built from a different `lg` repo and tag:
+
+```sh
+make image-publish IMAGE_REPO=ghcr.io/<owner>/docker-rgpio IMAGE_TAG=latest LG_REPO=<owner>/lg LG_TAG=<tag>
 ```
 
 Build and publish a specific version tag:
@@ -57,6 +69,13 @@ If you prefer not to use `make`, the underlying helper is:
 ```sh
 sh scripts/docker-image.sh build
 sh scripts/docker-image.sh publish
+```
+
+The helper also accepts inline `NAME=value` overrides after the action:
+
+```sh
+sh scripts/docker-image.sh build LG_REPO=<owner>/lg LG_TAG=<tag>
+sh scripts/docker-image.sh publish IMAGE_REPO=ghcr.io/<owner>/docker-rgpio IMAGE_TAG=latest LG_REPO=<owner>/lg LG_TAG=<tag>
 ```
 
 ## Assumptions
@@ -93,9 +112,16 @@ Override the upstream tag from the outside with either `make` variables or build
 make image-build LG_TAG=202604-some-future-fix
 ```
 
+You can override both source repo and tag the same way:
+
+```sh
+make image-build LG_REPO=<owner>/lg LG_TAG=<tag>
+```
+
 ```sh
 docker buildx build \
   -t docker-rgpio:latest \
+  --build-arg LG_REPO=<owner>/lg \
   --build-arg LG_TAG=202604-some-future-fix \
   .
 ```

@@ -6,6 +6,8 @@ usage() {
 Usage:
   scripts/docker-image.sh build
   scripts/docker-image.sh publish
+  scripts/docker-image.sh build LG_REPO=<owner/repo> LG_TAG=<tag>
+  scripts/docker-image.sh publish IMAGE_REPO=<repo> IMAGE_TAG=<tag> LG_REPO=<owner/repo> LG_TAG=<tag>
 
 Environment:
   IMAGE_REPO     Image repository/name. Default: docker-rgpio
@@ -33,6 +35,36 @@ case "${action}" in
     exit 64
     ;;
 esac
+shift
+
+while [ "$#" -gt 0 ]; do
+  case "$1" in
+    *=*)
+      key=${1%%=*}
+      value=${1#*=}
+      case "${key}" in
+        IMAGE_REPO|IMAGE_TAG|IMAGE_PLATFORM|BASE_IMAGE|LG_REPO|LG_TAG|BUILDER_NAME|EXTRA_ARGS)
+          export "${key}=${value}"
+          ;;
+        *)
+          echo "Unsupported override: ${key}" >&2
+          usage >&2
+          exit 64
+          ;;
+      esac
+      ;;
+    -h|--help)
+      usage
+      exit 0
+      ;;
+    *)
+      echo "Unexpected argument: $1" >&2
+      usage >&2
+      exit 64
+      ;;
+  esac
+  shift
+done
 
 if ! command -v docker >/dev/null 2>&1; then
   echo "docker is required but was not found in PATH" >&2
